@@ -1,0 +1,62 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Logs{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <h2>Рассылка {{mailing.mailing_name}} от {{ mailing.mailing_date }}</h2>
+        <hr>
+        <div class="containter sticky-top">
+            <input type="submit" class="btn btn-outline-secondary" name="Back" value="Назад">
+        </div>
+        <hr>
+        <div class="container table">
+            <table class="table">
+                <caption>Пользователи рассылки</caption>
+                <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">ФИО</th>
+                    <th scope="col">Почта</th>
+                    <th scope="col">Логин</th>
+                    <th scope="col">Группы</th>
+                    <th scope="col">Название шаблона</th>
+                    <th scope="col">Результат</th>
+                </thead>
+                <tbody>
+                    {% for user in mailings.users %}
+                    <tr>
+                        <td scope="row">{{ forloop.counter }}</td>
+                        <td>{{ user.user.first_name }} {{ user.user.second_name }}{% if user.user.surname %} {{ user.user.surname }}{% endif %}</td>
+                        <td>
+                        {% for email in user.emails %}
+                        <pre>{{ email.email }}</pre>
+                        {% endfor %}
+                        </td>
+                        <td>{{ user.user.login }}</td>
+                        <td>
+                        {% for group in user.groups %}
+                        <pre>{{ group }}</pre>
+                        {% endfor %}
+                        </td>
+                        <td>{{ mailings.template.template_name }}</td>
+                        <td>{% if user.result == 1 %}Success{% else %}Error{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %}

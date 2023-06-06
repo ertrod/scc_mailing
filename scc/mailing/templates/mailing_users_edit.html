@@ -1,0 +1,194 @@
+{% extends 'mailing_base.html' %}
+{% load static %}
+
+{% block title %}User Edit{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"
+        data-url-post = "{% url 'mailing:post-ajax' %}"
+        data-url-school = "{% url 'mailing:school-ajax' %}"
+        data-url-department = "{% url 'mailing:department-ajax' %}"
+></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="container sticky-top p-2">
+            <a href="{% url 'mailing:users' %}">
+                <button  type="button" class="btn btn-outline-secondary">Назад</button>
+            </a>
+            <input type="submit" class="btn btn-primary" value="Подтвердить">
+        </div>
+        <hr>
+        {% for u in user_forms %}
+        <div class="container p-2" name="user-form" value="{{ u.id }}">
+            <p class="font-weight-bold">ID: {{ u.id }}</p>
+            <div class="container d-flex">
+                <div class="col-sm-7">
+                    <table class="table-responsive">
+                        {{ u.form.as_table }}
+                    </table>
+                    <table class="table-responsive">
+                        <tr>
+                            <th>
+                                <label>Должность</label>
+                            </th>
+                            <td>
+                                <div class="select-editable user-edit-form-row">
+                                    <select id="select-post{{ u.id }}" 
+                                    onchange="this.nextElementSibling.value=this.value; 
+                                    this.nextElementSibling.setAttribute('data-id', $(this).find('option:selected').attr('data-id'));
+                                    this.nextElementSibling.setAttribute('value', $(this).find('option:selected').attr('value'))">
+                                        <option data-id="-1" name="user-posts" value="" hidden></option>
+                                        {% for p in posts %}
+                                        <option data-id="{{ p.id }}" name="user-posts" value="{{ p.post_name }}" >{{ p.post_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text"
+                                        id="input-post{{ u.id }}"
+                                        data-id="{{ u.post.id }}"
+                                        name="post{{ u.id }}"
+                                        oninput="this.previousElementSibling.options[0].setAttribute('data-id', this.getAttribute('data-id')); this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value"
+                                        onchange="this.previousElementSibling.selectedIndex=0" value="{{ u.post.name }}">
+                                </div>
+                            </td>
+                            <td>
+                                <input id="foreign-post-create{{ u.id }}" data-operation="create" class="btn btn-sm btn-outline-secondary" type="button" value="Создать" name="post-create{{ u.id }}">
+                                <input id="foreign-post-update{{ u.id }}" data-operation="update" class="btn btn-sm btn-outline-secondary" type="button" value="Обновить" name="post-update{{ u.id }}">
+                                <input id="foreign-post-delete{{ u.id }}" data-operation="delete" class="btn btn-sm btn-outline-secondary" type="button" value="Удалить" name="post-delete{{ u.id }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label>Институт</label>
+                            </th>
+                            <td>
+                                <div class="select-editable user-edit-form-row">
+                                    <select id="select-school{{ u.id }}" 
+                                    onchange="this.nextElementSibling.value=this.value; 
+                                    this.nextElementSibling.setAttribute('data-id', $(this).find('option:selected').attr('data-id'));
+                                    this.nextElementSibling.setAttribute('value', $(this).find('option:selected').attr('value'))">
+                                        <option data-id="-1" name="user-posts" value="" hidden></option>
+                                        {% for s in schools %}
+                                        <option data-id="{{ s.id }}" name="user-school" value="{{ s.school_name }}" readonly>{{ s.school_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text"
+                                        id="input-school{{ u.id }}"
+                                        data-id="{{ u.school.id }}"
+                                        name="school{{ u.id }}"
+                                        oninput="this.previousElementSibling.options[0].setAttribute('data-id', this.getAttribute('data-id')); this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value"
+                                        onchange="this.previousElementSibling.selectedIndex=0" value="{{ u.school.name }}">
+                                </div>
+                            </td>
+                            <td>
+                                <input id="foreign-school-create{{ u.id }}" data-operation="create" class="btn btn-sm btn-outline-secondary" type="button" value="Создать" name="school-create{{ u.id }}">
+                                <input id="foreign-school-update{{ u.id }}" data-operation="update" class="btn btn-sm btn-outline-secondary" type="button" value="Обновить" name="school-update{{ u.id }}">
+                                <input id="foreign-school-delete{{ u.id }}" data-operation="delete" class="btn btn-sm btn-outline-secondary" type="button" value="Удалить" name="school-delete{{ u.id }}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <lable>Кафедра</lable>
+                            </th>
+                            <td>
+                                <div class="select-editable user-edit-form-row">
+                                    <select id="select-department{{ u.id }}" 
+                                    onchange="this.nextElementSibling.value=this.value; 
+                                    this.nextElementSibling.setAttribute('data-id', $(this).find('option:selected').attr('data-id'));
+                                    this.nextElementSibling.setAttribute('value', $(this).find('option:selected').attr('value'))">
+                                        <option data-id="-1" name="user-posts" value="" hidden></option>
+                                        {% for d in departments %}
+                                        <option data-id="{{ d.id }}" name="user-department" value="{{ d.department_name }}" readonly>{{ d.department_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="text"
+                                        id="input-department{{ u.id }}"
+                                        name="department{{ u.id }}"
+                                        data-id="{{ u.department.id }}"
+                                        oninput="this.previousElementSibling.options[0].setAttribute('data-id', this.getAttribute('data-id')); this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value"
+                                        onchange="this.previousElementSibling.selectedIndex=0" value="{{ u.department.name }}">
+                                </div>
+                            </td>
+                            <td>
+                                <input id="foreign-department-create{{ u.id }}" data-operation="create" class="btn btn-sm btn-outline-secondary" type="button" value="Создать" name="school-create{{ u.id }}">
+                                <input id="foreign-department-update{{ u.id }}" data-operation="update" class="btn btn-sm btn-outline-secondary" type="button" value="Обновить" name="school-update{{ u.id }}">
+                                <input id="foreign-department-delete{{ u.id }}" data-operation="delete" class="btn btn-sm btn-outline-secondary" type="button" value="Удалить" name="school-delete{{ u.id }}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-sm-3">
+                    <table class="d-block">
+                        
+                        <thead>
+                            <th scope="col">Почта</th>
+                        </thead>
+                        <tbody id="tbl-email{{ u.id }}">
+                            {% if u.emails %}
+                            {% for e in u.emails %}
+                            <tr>
+                                <td>
+                                    <input type="email" name="email{{ u.id }}" value="{{ e.email }}">
+                                    <input type="hidden" name="email-id{{ u.id }}" value="{{ e.id }}">
+                                </td>
+                                <td>
+                                    <input type="button" class="btn btn-sm btn-outline-danger" value="Удалить" onclick="DeleteRow(this)">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td>
+                                    <input type="email" name="email{{ u.id }}">
+                                </td>
+                                <td>
+                                    <input type="button" class="btn btn-sm btn-outline-danger" value="Удалить" onclick="DeleteRow(this)">
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <button type="button" class="w-100 ml-2 btn btn-primary" id="add-row-email{{ u.id }}" value="{{ u.id }}"
+                        name="add-email">Добавить</button>
+                </div>
+                <div class="col">
+                    <table class="d-block ml-3">
+                        <thead>
+                            <th scope="col">Группы</th>
+                            <th scope="col">
+                                <input type="checkbox" name="select-all" id="select-all-{{ u.id }}" value="{{ u.id }}">
+                            </th>
+                        </thead>
+                        <tbody>
+                        {% for g in u.group %}
+                            <tr scope="row">
+                                <td scope="row">
+                                    {{ g.group.group_name }}
+                                </td>
+                                <td>
+                                {% if g.is_in %}
+                                    <input type="checkbox" value="{{g.group.id}}" name="checked-groups-{{ u.id }}" checked>
+                                {% else %}
+                                    <input type="checkbox" value="{{g.group.id}}" name="checked-groups-{{ u.id }}">
+                                {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,137 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+<script src="{% static 'modal.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="container sticky-top d-block">
+            <a href="{% url 'mailing:groups' %}">
+                <button type="button" class="btn btn-outline-secondary">Назад</button>
+            </a>
+            <button type="submit" class="btn btn-danger" value="Delete" name="Delete" id="group-delete-confirm">Удалить</button>
+            <button type="button" class="btn btn-primary" id="button-modal">Редактировать пользователей</button>
+            <button type="submit" class="btn btn-primary" value="Confirm" name="Confirm">Подтвердить</button>
+        </div>
+        <hr>
+        <div class="containter">
+            <div class="row p-4">
+                <div class="col">
+                    {{ group.form.as_table }}
+                </div>
+            </div>
+            <div class="row">
+                <table class="table">
+                    <caption>Пользователи группы</caption>
+                    <thead>
+                        <th scope="col-1">#</th>
+                        <th scope="col-1">ID</th>
+                        <th scope="col-1">Логин</th>
+                        <th scope="col-1">Номер служебной записки</th>
+                        <th scope="col-1">Должность</th>
+                        <th scope="col-1">Фамилия</th>
+                        <th scope="col-1">Имя</th>
+                        <th scope="col-1">Отчество</th>
+                        <th scope="col-1">Номер телефона</th>
+                        <th scope="col-1">Институт</th>
+                        <th scope="col-1">Кафедра</th>
+                        <th scope="col-1">Комментарий</th>
+                    </thead>
+                    <tbody>
+                        {% for user in users_in_group %}
+                        <tr>
+                            <th>{{ forloop.counter }}</th>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.login }}</td>
+                            <td>{{ user.service_memo_number }}</td>
+                            <td>{{ user.post }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.surname }}</td>
+                            <td>{{ user.number }}</td>
+                            <td>{{ user.school }}</td>
+                            <td>{{ user.department }}</td>
+                            <td>{{ user.commentary }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="modal-window" class="modal-window">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-name">
+                        <span class="text font-weight-bold">Редактирование пользователей</span>
+                    </div>
+                    <h3 id="modal-close" class="modal-close font-weight-bold">&times;</h3>
+                </div>
+                <div class="modal-body table-responsive">
+                        <table class="table">
+                            <caption>Пользователи</caption>
+                            <thead>
+                                <th scope="col">
+                                    <input type="checkbox" name="select-all" id="select-all">
+                                </th>
+                                <th scope="col-1">#</th>
+                                <th scope="col-1">ID</th>
+                                <th scope="col-1">Логин</th>
+                                <th scope="col-1">Номер служебной записки</th>
+                                <th scope="col-1">Должность</th>
+                                <th scope="col-1">Фамилия</th>
+                                <th scope="col-1">Имя</th>
+                                <th scope="col-1">Отчество</th>
+                                <th scope="col-1">Номер телефона</th>
+                                <th scope="col-1">Институт</th>
+                                <th scope="col-1">Кафедра</th>
+                                <th scope="col-1">Комментарий</th>
+                            </thead>
+                            <tbody>
+                                {% for u in all_users %}
+                                <tr>
+                                    {% if u.is_in %}
+                                    <th scope="row">
+                                        <input type="checkbox" value={{u.user.id}} name="checked-users" checked>
+                                    </th>
+                                    {% else %}
+                                    <th scope="row">
+                                        <input type="checkbox" value={{u.user.id}} name="checked-users">
+                                    </th>
+                                    {% endif %}
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ u.user.id }}</td>
+                                    <td>{{ u.user.login }}</td>
+                                    <td>{{ u.user.service_memo_number }}</td>
+                                    <td>{{ u.user.post }}</td>
+                                    <td>{{ u.user.last_name }}</td>
+                                    <td>{{ u.user.first_name }}</td>
+                                    <td>{{ u.user.surname }}</td>
+                                    <td>{{ u.user.number }}</td>
+                                    <td>{{ u.user.school }}</td>
+                                    <td>{{ u.user.department }}</td>
+                                    <td>{{ u.user.commentary }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" value="Add" name="Add">Подтвердить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+
+{% extends 'mailing_base.html' %}
+
+{% block title %}Logs{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <h2>Предыдущие рассылки</h2>
+        <hr>
+        <div class="container table">
+            <table class="table">
+                <caption>Предыдущие рассылки</caption>
+                <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">Тема рассылки</th>
+                    <th scope="col">Дата рассылки</th>
+                    <th scope="col"></th>
+                </thead>
+                <tbody>
+                    {% for mailing in mailings %}
+                    <tr>
+                        <td scope="row">{{ forloop.counter }}</td>
+                        <td>{{ mailing.mailing_name }}</td>
+                        <td>{{ mailing.mailing_date }}</td>
+                        <td>
+                            <button type="submit" class="btn btn-primary" id="mailing-details" name="Details" value="{{ mailing.id }}">Детали</button>
+                            <button type="submit" class="btn btn-danger" id="mailing-delete" name="Delete" value="{{ mailing.id }}">Удалить</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %}

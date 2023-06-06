@@ -1,0 +1,129 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+<script src="{% static 'drop.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+<div class="container">
+    <h2>Пользователи</h2>
+</div>
+<div class="container-fluid">
+    <div class="container position-sticky sticky-top mx-auto float-none ">
+    <hr>
+        <input type="submit" class="btn btn-primary" name="Create" value="Создать пользователя">
+        <input type="submit" class="btn btn-primary" name="Edit" value="Редактировать пользователей">
+        <input type="submit" class="btn btn-danger" name="Remove" id="remove-users" value="Удалить пользователей">
+    </div>
+    <hr>
+    <div class="m-5 w-25 float-right">
+        <div class="mx-auto">
+        <p class="mx-auto font-weight-bold">Импортировать из файла:</p>
+        <div>
+            <p id="file-result"></p>
+            <div id="dropContainer" class="row d-flex justify-content-center drop">
+                <input class="btn btn-outline-secondary fileInput align-self-center justify-content-center" accept=".txt, .md, .docx" type="file" id="fileInput" name="File">
+            </div>
+            <input class="m-2 btn btn-secondary float-right" type="submit" id="file-import" name="Import" value="Импортировать">
+        </div>
+        </div>
+    </div>
+        <div class="table-responsive d-block w-100">
+            <table class="table table-bordered">
+                <caption>Пользователи</caption>
+                <thead>
+                    <th scope="col">
+                        <input type="checkbox" name="select-all" id="select-all">
+                    </th>
+                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Логин</th>
+                    <th scope="col">Почта</th>
+                    <th scope="col">Группы</th>
+                    <th scope="col">Номер служебной записки</th>
+                    <th scope="col">Дата регистрации служебной записки</th>
+                    <th scope="col">Должность</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Номер телефона</th>
+                    <th scope="col">Институт</th>
+                    <th scope="col">Кафедра</th>
+                    <th scope="col">SPIN-код РИНЦ</th>
+                    <th scope="col">Researcher ID</th>
+                    <th scope="col">Научный проект</th>
+                    <th scope="col">Научный руководитель</th>
+                    <th scope="col">IP доступа к лицензиям</th>
+                    <th scope="col">Комментарий</th>
+                </thead>
+                <tbody>
+                    {% for data in DataPaginated %}
+                    <tr>
+                        <th scope="row">
+                            <input type="checkbox" value={{data.user.id}} name="checked-users">
+                        </th>
+                        <th>{{ forloop.counter }}</th>
+                        <td>{{ data.user.id }}</td>
+                        <td>{{ data.user.login }}</td>
+                        <td>
+                            {% for e in data.emails %}
+                            <pre>{{ e.email }}</pre>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for g in data.groups %}
+                            <pre>{{ g }}</pre>
+                            {% endfor %}
+                        </td>
+                        <td>{{ data.user.service_memo_number }}</td>
+                        <td>{{ data.user.service_registration_date }}</td>
+                        <td>{{ data.user.post }}</td>
+                        <td>{{ data.user.last_name }}</td>
+                        <td>{{ data.user.first_name }}</td>
+                        <td>{{ data.user.surname }}</td>
+                        <td>{{ data.user.number }}</td>
+                        <td>{{ data.user.school }}</td>
+                        <td>{{ data.user.department }}</td>
+                        <td>{{ data.user.spin_code }}</td>
+                        <td>{{ data.user.researcher_id }}</td>
+                        <td>{{ data.user.science_project }}</td>
+                        <td>{{ data.user.science_mentor }}</td>
+                        <td>{{ data.user.access_id }}</td>
+                        <td>{{ data.user.commentary }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+	<!-- {% block pagination %}
+		<div class="pagination">
+			<span class="page-links">
+				{% if DataPaginated.has_previous %}
+				<a href="?page=1&param={{param}}">&laquo; first</a>
+				<a href="?page={{DataPaginated.previous_page_number}}&param={{param}}">previous</a>
+				{% endif %}
+				<span class="page-current">
+					Page {{ DataPaginated.number }} of {{ DataPaginated.paginator.num_pages }}.
+				</span>
+				{% if DataPaginated.has_next %}
+				<a href="?page={{DataPaginated.next_page_number}}&param={{param}}">next</a>
+				<a href="?page={{DataPaginated.paginator.num_pages}}&param={{param}}">last &raquo;</a>
+				{% endif %}
+			</span>
+		</div>
+	{% endblock %} -->
+
+{% endblock %}

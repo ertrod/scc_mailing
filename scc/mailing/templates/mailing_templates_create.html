@@ -1,0 +1,64 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Templates{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+<script src="{% static 'drop.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <div class="container sticky-top">
+        <a href="{% url 'mailing:templates' %}">
+            <button type="button" class="btn btn-outline-secondary">Назад</button>
+        </a>
+        <input type="submit" class="btn btn-primary" name="Create" value="Создать">
+    </div>
+    <hr>
+    <div class="container w-75 d-flex">
+        <div class="col-sm-11">
+        {{ form.media }}
+        {{ form.as_p  }}
+        </div>
+        <div class="col-sm-4 my-auto float-left">
+            <p>
+            <strong>service_memo_number</strong> - номер служебной записки<br>
+            <strong>service_registration_date</strong> - дата регистрации служебной записки<br>
+            <strong>last_name</strong> - фамилия<br>
+            <strong>first_name</strong> - имя<br>
+            <strong>surname</strong> - отчество<br>
+            <strong>login</strong> - логин<br>
+            <strong>number</strong> - номер телефона<br>
+            <strong>spin_code</strong> - SPIN-код РИНЦ<br>
+            <strong>researcher_id</strong> - Researcher ID<br>
+            <strong>science_project</strong> - Научный проект<br>
+            <strong>science_mentor</strong> - Научный руководитель<br>
+            <!-- <strong>post</strong> - должность<br>
+            <strong>school</strong> - институт<br>
+            <strong>department</strong> - кафедра<br> -->
+            </p>
+        </div>
+    </div>
+</form>
+<form enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <div class="w-25 mx-auto import">
+        <p class="font-weight-bold">Импорт из файла:</p>
+        <div class="">
+            <p id="file-result"></p>
+            <div id="dropContainer" class="justify-content-center drop">
+                <input class="btn btn-outline-secondary align-self-center fileInput" accept=".txt, .md, .docx" type="file" id="fileInput" name="File">
+            </div>
+            <input type="submit" id="file-import" class="m-2 mx-auto btn btn-secondary" name="Import" value="Импортировать">
+        </div>
+    </div>
+</form>
+{% endblock %}

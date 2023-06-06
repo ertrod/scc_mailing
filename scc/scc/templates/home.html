@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+	<h2>Pages:</h2>
+	<p>
+		<a href="{% url 'admin:index' %}">Admin page</a>
+	</p>
+	<p>
+		<a href="{% url 'mailing:index' %}">Mailing page</a>
+	</p>
+	<p>
+		<a href="{% url 'logout' %}">Logout</a>
+	</p>
+{% else %}
+	<p>You are not logged in!</p>
+	<a href="{% url 'login' %}">Log In</a>
+{% endif %}
+
+{% endblock %}

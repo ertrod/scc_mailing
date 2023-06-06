@@ -1,0 +1,51 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Templates{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="container">
+        <h2>Шаблоны</h2>
+        <hr>
+        <div class="container sticky-top">
+            <input type="submit" class="btn btn-primary" name="Create" value="Создать">
+        </div>
+        <hr>
+        <div class="container table">
+            <table class="table">
+                <caption>Шаблоны</caption>
+                <thead>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col"></th>
+                </thead>
+                <tbody>
+                    {% for template in templates %}
+                    <tr>
+                        <td scope="row">{{ forloop.counter }}</td>
+                        <td>{{ template.template_name }}</td>
+                        <td>{{ template.template_date }}</td>
+                        <td>
+                            <button type="submit" class="btn btn-outline-secondary" name="Edit" value="{{ template.id }}">Изменить</button>
+                            <button type="submit" class="btn btn-danger" id="template-delete" name="Delete" value="{{ template.id }}">Удалить</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %}

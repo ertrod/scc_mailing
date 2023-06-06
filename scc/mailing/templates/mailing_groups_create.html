@@ -1,0 +1,37 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+<script src="{% static 'modal.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <div class="sticky-top">
+            <a href="{% url 'mailing:groups' %}">
+                <button type="button" class="btn btn-outline-secondary">Назад</button>
+            </a>
+            <button type="submit" class="btn btn-outline-primary" value="Edit" name="Edit">Редактировать пользователей</button>
+            <button type="submit" class="btn btn-primary" value="Confirm" name="Confirm">Подтвердить</button>
+        </div>
+        <hr>
+        <div class="containter">
+            <div class="row group-edit-form">
+                <div class="col font-weight-bold">
+                    {{ group.as_table }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

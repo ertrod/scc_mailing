@@ -1,0 +1,91 @@
+{% extends 'mailing_base.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Группы</h2>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        <div class="container ml-3 sticky-top">
+            <input type="submit" class="btn btn-primary" name="Create" value="Создать группу">
+        </div>
+    </form>
+</div>
+<div class="container w-100">
+    <hr>
+    <form method="post" class="m-3 align-self-center">
+        {% csrf_token %}
+        <div class="row">
+            {% for g in group_list %}
+            <div class="row mx-2 my-2">
+                <div class="group-instance border border-secondary rounded">
+                    <div class="d-flex">
+                        <h3 class="ml-3 mr-auto mb-auto mt-3">{{ g.group.group_name }}</h3>
+                        <button type="submit" class="m-2 float-right btn btn-outline-secondary" name="Edit" value="{{g.group.id}}">Редактировать</button>
+                        </div>
+                    <div class="border-top table-responsive p-2 h-75 table-wrapper-scroll-y custom-scrollbar">
+                        <table class="table">
+                            <caption>Пользователи</caption>
+                            <thead>
+                                <th scope="col-1">#</th>
+                                <th scope="col-1">ID</th>
+                                <th scope="col-1">Логин</th>
+                                <th scope="col-1">Номер служебной записки</th>
+                                <th scope="col-1">Должность</th>
+                                <th scope="col-1">Фамилия</th>
+                                <th scope="col-1">Имя</th>
+                                <th scope="col-1">Отчество</th>
+                                <th scope="col-1">Номер телефона</th>
+                                <th scope="col-1">Институт</th>
+                                <th scope="col-1">Кафедра</th>
+                                <th scope="col-1">SPIN-код РИНЦ</th>
+                                <th scope="col-1">Researcher ID WoS</th>
+                                <th scope="col-1">Научный проект</th>
+                                <th scope="col-1">Научный руководитель</th>
+                                <th scope="col-1">IP доступа к лицензиям</th>
+                                <th scope="col-1">Комментарий</th>
+                            </thead>
+                            <tbody>
+                                {% for data in g.users %}
+                                <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ data.user.id }}</td>
+                                    <td>{{ data.user.login }}</td>
+                                    <td>{{ data.user.service_memo_number }}</td>
+                                    <td>{{ data.user.post }}</td>
+                                    <td>{{ data.user.last_name }}</td>
+                                    <td>{{ data.user.first_name }}</td>
+                                    <td>{{ data.user.surname }}</td>
+                                    <td>{{ data.user.number }}</td>
+                                    <td>{{ data.user.school }}</td>
+                                    <td>{{ data.user.department }}</td>
+                                    <td>{{ data.user.spin_code }}</td>
+                                    <td>{{ data.user.researcher_id }}</td>
+                                    <td>{{ data.user.science_project }}</td>
+                                    <td>{{ data.user.science_mentor }}</td>
+                                    <td>{{ data.user.access_id }}</td>
+                                    <td>{{ data.user.commentary }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+{% endblock %}

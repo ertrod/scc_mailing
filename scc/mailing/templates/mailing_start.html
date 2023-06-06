@@ -1,0 +1,138 @@
+
+{% extends 'mailing_base.html' %}
+
+{% block title %}Mailing{% endblock %}
+
+{% load static %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% endblock %}
+
+{% block header_scripts %}
+<script src="{% static 'header-actions.js' %}"
+        data-url-groups="{% url 'mailing:groups-ajax' %}"
+></script>
+<script src="{% static 'drop.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Создание рассылки</h2>
+    <hr>
+    <form enctype="multipart/form-data" method="post" >
+    {% csrf_token %}
+    <div class="float-right ml-4 p-2 sticky-top">
+        <input type="submit" class="btn btn-primary" id="send-mails" name="Send" value="Отправить">
+    </div>
+    <div class="m-3">
+        <lable for="subject" class="font-weight-bold">Тема сообщения: </lable>
+        <input type="text" id="subject" size="40" required name="Subject">
+    </div>
+    <!-- <div>
+        <lable for="attachments" class="font-weight-bold">Attachments: </lable>
+        <p id="attachments-result"></p>
+        <div id="msg-attachments" id="attachments-container" class="row drop border border-dark justify-content-center">
+            <input type="file" id="msg-attachments" class="align-self-center" multiple>
+        </div>
+    </div> -->
+    <div class="m-3">
+        <lable for="select-template" class="font-weight-bold">Выберите шаблон:</lable>
+        <select name="Templates" id="templates" required>
+            <option value="" data-id="-1">----</option>
+            {% for template in templates %}
+            <option value="{{ template.id }}">{{ template.template_name }}</option>
+            {% endfor %}
+        </select>
+        <!-- place for prewiew -->
+    </div>
+    <hr>
+    <div class="m-3">
+        <lable for="select-groups" class="font-weight-bold">Выберите группы:</lable>
+        <table class="table">
+            <thead>
+                <th scope="col">Группа</th>
+                <th scope="col">
+                    <input type="checkbox" name="select-all-groups" id="select-all-groups">
+                </th>
+            </thead>
+            <tbody>
+            {% for g in groups %}
+                <tr scope="row">
+                    <td scope="row">
+                        {{ g.group_name }}
+                    </td>
+                    <td>
+                        <input type="checkbox" value="{{g.id}}" name="checked-groups" id="checked-groups">
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <hr>
+    <div class="m-3">
+        <lable for="select-additional-users" class="font-weight-bold">Выберите пользователей:</lable>
+        <div class="row mx-auto table-responsive">
+            <table class="table table-bordered" id="users-table">
+                <caption>Пользователи</caption>
+                <thead>
+                    <th scope="col">
+                        <input type="checkbox" name="select-all-users" id="select-all-users">
+                    </th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Логин</th>
+                    <th scope="col">Почта(ы)</th>
+                    <th scope="col">Группы</th>
+                    <th scope="col">Номер служебной рассылки</th>
+                    <th scope="col">Дата регистрации служебной записки</th>
+                    <th scope="col">Должность</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Номер телефона</th>
+                    <th scope="col">Институт</th>
+                    <th scope="col">Кафедра</th>
+                    <th scope="col">Научный проект</th>
+                    <th scope="col">Научный руководитель</th>
+                    <th scope="col">Комментарий</th>
+                </thead>
+                <tbody>
+                    {% for data in users %}
+                    <tr>
+                        <th scope="row">
+                            <input type="checkbox" value={{data.user.id}} name="checked-users" id="checked-users">
+                        </th>
+                        <td>{{ data.user.id }}</td>
+                        <td>{{ data.user.login }}</td>
+                        <td>
+                            {% for e in data.emails %}
+                            <pre>{{ e.email }}</pre>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            {% for g in data.groups %}
+                            <pre>{{ g }}</pre>
+                            {% endfor %}
+                        </td>
+                        <td>{{ data.user.service_memo_number }}</td>
+                        <td>{{ data.user.service_registration_date }}</td>
+                        <td>{{ data.user.post }}</td>
+                        <td>{{ data.user.last_name }}</td>
+                        <td>{{ data.user.first_name }}</td>
+                        <td>{{ data.user.surname }}</td>
+                        <td>{{ data.user.number }}</td>
+                        <td>{{ data.user.school }}</td>
+                        <td>{{ data.user.department }}</td>
+                        <td>{{ data.user.science_project }}</td>
+                        <td>{{ data.user.science_mentor }}</td>
+                        <td>{{ data.user.commentary }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
